@@ -457,6 +457,11 @@ details p{margin-top:calc(var(--u)*5);font:400 calc(var(--u)*10.5)/1.55 var(--te
    treatment inside the feed, the extra big-win spectacle (enhance inset, jackpot
    lift), and small styling for the maths/run-log panels the Info screen doesn't
    ship with by default. */
+/* The jam widget (jam.chain.wtf/widget.js) plants a fixed ~152x37px badge in the
+   viewport's bottom-right corner, in its own fixed-size CSS unrelated to --u. Reserve
+   a flat gutter there so it never sits on top of Release, whatever --u works out to. */
+#rail{padding-right:max(calc(var(--u)*24), 190px)}
+@media (orientation:portrait){ #rail{padding-right:calc(var(--u)*12)} }
 #room{position:fixed;inset:0;overflow:hidden}
 #stage{display:block;width:100%;height:100%}
 #room.shaking{animation:mountshake .42s ease-in-out infinite}
