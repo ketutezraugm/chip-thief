@@ -2743,6 +2743,30 @@ CT.init({
   onVisibility: () => {}
 });
 
+// The jam widget (jam.chain.wtf/widget.js) injects its own <style> asynchronously with a
+// fixed bottom-right position — right where Release lives. Move it up beside our own
+// switches instead, by measurement rather than CSS: its stylesheet loads after ours with
+// no guaranteed cascade order, but an inline style always wins over an external one.
+// The CSS gutter reserved near Release stays as a fallback for if this never fires
+// (ad blocker, a widget redesign that changes the id, etc).
+(function placeJamBadge(){
+  const switches = $('switches');
+  function place(){
+    const badge = document.getElementById('chain-jam-badge');
+    if (!badge || !switches) return false;
+    const s = switches.getBoundingClientRect();
+    badge.style.position = 'fixed';
+    badge.style.bottom = 'auto';
+    badge.style.top = (s.top + s.height/2 - badge.offsetHeight/2) + 'px';
+    badge.style.right = (window.innerWidth - s.left + 10) + 'px';
+    return true;
+  }
+  if (place()){ addEventListener('resize', place, {passive:true}); return; }
+  const mo = new MutationObserver(() => { if (place()){ mo.disconnect(); addEventListener('resize', place, {passive:true}); } });
+  mo.observe(document.body, {childList:true, subtree:true});
+  setTimeout(()=>mo.disconnect(), 8000);   // give up quietly if the widget never loads
+})();
+
 // how-to-play thumbnails: the room's own backdrop at three scroll positions (idle,
 // mid-floor, by the exit) — the actors are the real game's, not worth a second copy
 // of the world's scene-compositing code just for three static panels.
