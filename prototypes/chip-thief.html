@@ -460,10 +460,12 @@ details p{margin-top:calc(var(--u)*5);font:400 calc(var(--u)*10.5)/1.55 var(--te
 /* The jam widget (jam.chain.wtf/widget.js) plants a fixed ~152x37px badge in the
    viewport's bottom-right corner, in its own fixed-size CSS unrelated to --u. Reserve
    a flat gutter there so it never sits on top of Release, whatever --u works out to. */
-#rail{padding-right:max(calc(var(--u)*24), 190px)}
+/* landscape/desktop: push the whole rail's right edge clear of the badge */
+@media (orientation:landscape){ #rail{padding-right:max(calc(var(--u)*24), 190px)} }
 /* portrait stacks the rail into rows and Release goes full-width (chrome.css), which
-   would run it straight under the same badge — give that one row a right margin
-   instead of padding the whole rail (the counter/tray rows above it don't need it). */
+   would run it straight under the same badge — give just that row a right-side gutter
+   instead of padding the whole rail (the counter/tray rows above it don't need it;
+   this must NOT stack with the landscape rule above, or the two gutters compound). */
 @media (orientation:portrait){ #go{width:calc(100% - 175px)} }
 #room{position:fixed;inset:0;overflow:hidden}
 #stage{display:block;width:100%;height:100%}
