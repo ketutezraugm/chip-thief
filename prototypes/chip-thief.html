@@ -461,7 +461,10 @@ details p{margin-top:calc(var(--u)*5);font:400 calc(var(--u)*10.5)/1.55 var(--te
    viewport's bottom-right corner, in its own fixed-size CSS unrelated to --u. Reserve
    a flat gutter there so it never sits on top of Release, whatever --u works out to. */
 #rail{padding-right:max(calc(var(--u)*24), 190px)}
-@media (orientation:portrait){ #rail{padding-right:calc(var(--u)*12)} }
+/* portrait stacks the rail into rows and Release goes full-width (chrome.css), which
+   would run it straight under the same badge — give that one row a right margin
+   instead of padding the whole rail (the counter/tray rows above it don't need it). */
+@media (orientation:portrait){ #go{width:auto;margin-right:175px} }
 #room{position:fixed;inset:0;overflow:hidden}
 #stage{display:block;width:100%;height:100%}
 #room.shaking{animation:mountshake .42s ease-in-out infinite}
