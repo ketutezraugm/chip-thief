@@ -2750,11 +2750,20 @@ CT.init({
 // The CSS gutter reserved near Release stays as a fallback for if this never fires
 // (ad blocker, a widget redesign that changes the id, etc).
 (function placeJamBadge(){
-  const switches = $('switches');
+  const switches = $('switches'), sign = $('sign');
   function place(){
     const badge = document.getElementById('chain-jam-badge');
     if (!badge || !switches) return false;
     const s = switches.getBoundingClientRect();
+    const left = s.left - 10 - badge.offsetWidth;
+    // Not enough room beside the switches on a narrow screen (it collides with the
+    // wordmark instead) — leave it at its own default bottom-right, where the CSS
+    // gutter already keeps it clear of Release. Clearing any earlier override also
+    // lets a resize back to a wide window (or narrow again) flip it either way.
+    if (sign && left < sign.getBoundingClientRect().right + 8){
+      badge.style.position = badge.style.top = badge.style.right = badge.style.bottom = '';
+      return true;
+    }
     badge.style.position = 'fixed';
     badge.style.bottom = 'auto';
     badge.style.top = (s.top + s.height/2 - badge.offsetHeight/2) + 'px';
