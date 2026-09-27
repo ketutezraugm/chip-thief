@@ -4,22 +4,24 @@ Handoff notes for a fresh session. Read this before touching anything; a lot of
 what looks like an obvious improvement below has already been tried and rejected
 for a stated reason.
 
-## START HERE — status as of 2026-09-27 (deadline day)
+## START HERE — status as of 2026-09-27: SUBMITTED
+
+**The entry is in.** User submitted at jam.chain.wtf on 2026-09-27, deadline day. Nothing left to build
+against a deadline — treat further work as ordinary polish, not a race.
 
 **Live and public.** Deployed on Vercel at **https://chip-thief.vercel.app** (game at `/chip-thief.html`,
-`/` redirects; `prototypes/vercel.json` adds the redirect + CORS on the manifest). Repo is **public**.
-Manifest has `assets.iconUrl/coverUrl`, the page has `og:image`/`twitter:card`, manifest validates.
-Deadline **Sun 27 Sep 2026, 23:59 UTC** — today.
+`/` redirects; `prototypes/vercel.json` adds the redirect + CORS on the manifest). Repo is **public**, at
+`github.com/ketutezraugm/chip-thief` (see "Repo" below). Manifest has `assets.iconUrl/coverUrl`, the page
+has `og:image`/`twitter:card`, manifest validates. Submitted URL: `https://chip-thief.vercel.app/chip-thief.html`,
+declared RTP 96.0%.
 
 **Deploy:** `cd prototypes && npx vercel deploy --prod --yes` (already logged in and linked; `.vercel/` is
-untracked). No build step.
+untracked). No build step. The jam page says "same URL, newest build counts" — a redeploy after submission
+still updates the live entry, no resubmission needed, but check with the user before pushing more changes:
+the entry is now final in their mind unless they ask for something.
 
-**Still to do, in order:**
-1. **Submit at jam.chain.wtf** — needs the user's VPN, so this is on them, not something to attempt via
-   Bash/automation. Game URL `https://chip-thief.vercel.app/chip-thief.html`, declared RTP **96.0%** (~95.9%
-   effective after the 100× cap — say so in the pitch). The jam checks the widget on submit: before
-   submitting, load the live URL over VPN and confirm the small badge renders bottom-right.
-2. Ask the Chain team (discord.gg/3kpZHvvTq) whether they deploy/whitelist the contract themselves: it has
+**Still open, not urgent:**
+1. Ask the Chain team (discord.gg/3kpZHvvTq) whether they deploy/whitelist the contract themselves: it has
    only run on the local simulator chain, is unaudited and not on Base.
 
 **Chrome/animation/packaging rebuild (2026-09-27, Claude Design "Chip Thief Chrome v3" + "Chip Thief Logo",
