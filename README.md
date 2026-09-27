@@ -1,8 +1,8 @@
 # Chip Thief
 
-An entry for [Chain Jam Vol. 1](https://jam.chain.wtf): a goose robs a casino floor and
-runs for the fire exit, framed as CCTV surveillance footage. One button, one ~10 second
-scripted run, no decisions mid-run.
+A goose robs a casino floor and runs for the fire exit, framed as CCTV surveillance
+footage. One button, one ~10 second scripted run, no decisions mid-run — an entry for
+[Chain Jam Vol. 1](https://jam.chain.wtf).
 
 ## Layout
 

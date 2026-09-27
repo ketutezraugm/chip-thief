@@ -160,13 +160,14 @@ AI-generated code and assets are explicitly allowed.
 
 ## Repo
 
-- `github.com/ketutezraugm/chain-jam-vol-1` — **private**, branch `main`
+- `github.com/ketutezraugm/chip-thief` — **public**, branch `main`. Renamed 2026-09-27
+  from `chain-jam-vol-1` (it was the multi-prototype repo before Chip Thief was the
+  sole entry); GitHub redirects the old URL, but use the current one for the jam form.
 - Remote is **HTTPS** (SSH failed host-key verification; `gh auth setup-git` is configured)
 - `gh` CLI is at `C:\Program Files\GitHub CLI\gh.exe` — **not on PATH**, call it by full path
 - Authenticated as `ketutezraugm`
 - Local git identity is `AkuTampanTay <ezradarkwing@gmail.com>`, which does **not**
   match the GitHub account, so commits won't link to the profile
-- Flip public before submitting: `gh repo edit --visibility public`
 
 ## Layout
 
