@@ -1,1 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" rx="3" fill="#080b09"/><path d="M4.2 16Q4.2 11.8 6.2 9.8" stroke="#fdfaf3" stroke-width="3.2" fill="none" stroke-linecap="round"/><circle cx="7" cy="7.2" r="3.6" fill="#fdfaf3"/><path d="M10.1 5.6L14.8 7.3 10.1 9Z" fill="#f2a03c"/><circle cx="7.9" cy="6.3" r=".95" fill="#231a14"/><circle cx="12.7" cy="12.7" r="1.9" fill="#ff5a52"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Chip Thief">
+<rect width="64" height="64" rx="10" fill="#3d1620"></rect>
+<circle cx="32" cy="32" r="28" fill="#e0b25f"></circle>
+<circle cx="32" cy="32" r="23" fill="#3d1620"></circle>
+<circle cx="32" cy="32" r="23" fill="none" stroke="#fffbe8" stroke-width="4"></circle>
+<path d="M25 53C22 41 24 32 31 25" stroke="#fdfaf3" stroke-width="10" stroke-linecap="round" fill="none"></path>
+<circle cx="34" cy="22" r="10" fill="#fdfaf3"></circle>
+<path d="M42 17 L54 22 L42 27Z" fill="#f2a03c"></path>
+<circle cx="37" cy="19" r="2.6" fill="#231a14"></circle>
+</svg>

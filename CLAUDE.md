@@ -4,24 +4,91 @@ Handoff notes for a fresh session. Read this before touching anything; a lot of
 what looks like an obvious improvement below has already been tried and rejected
 for a stated reason.
 
-## START HERE — status as of 2026-09-26
+## START HERE — status as of 2026-09-27 (deadline day)
 
 **Live and public.** Deployed on Vercel at **https://chip-thief.vercel.app** (game at `/chip-thief.html`,
 `/` redirects; `prototypes/vercel.json` adds the redirect + CORS on the manifest). Repo is **public**.
 Manifest has `assets.iconUrl/coverUrl`, the page has `og:image`/`twitter:card`, manifest validates.
-Deadline **Sun 27 Sep 2026, 23:59 UTC**; "same URL, newest build counts", so submit first, polish after.
+Deadline **Sun 27 Sep 2026, 23:59 UTC** — today.
 
 **Deploy:** `cd prototypes && npx vercel deploy --prod --yes` (already logged in and linked; `.vercel/` is
 untracked). No build step.
 
-**Still to do:**
-1. Submit at jam.chain.wtf (needs the user's VPN). Game URL `https://chip-thief.vercel.app/chip-thief.html`,
-   declared RTP **96.0%** (~95.9% effective after the 100× cap; say so in the pitch). The jam checks the
-   widget on submit, so confirm the hosted page shows the badge.
+**Still to do, in order:**
+1. **Submit at jam.chain.wtf** — needs the user's VPN, so this is on them, not something to attempt via
+   Bash/automation. Game URL `https://chip-thief.vercel.app/chip-thief.html`, declared RTP **96.0%** (~95.9%
+   effective after the 100× cap — say so in the pitch). The jam checks the widget on submit: before
+   submitting, load the live URL over VPN and confirm the small badge renders bottom-right.
 2. Ask the Chain team (discord.gg/3kpZHvvTq) whether they deploy/whitelist the contract themselves: it has
    only run on the local simulator chain, is unaudited and not on Base.
-3. Store images in `prototypes/assets/` (icon/cover/social) were made for the old teal CCTV look; regenerate
-   them in the new casino palette (or screenshot the live game) if there is time.
+
+**Chrome/animation/packaging rebuild (2026-09-27, Claude Design "Chip Thief Chrome v3" + "Chip Thief Logo",
+`Assets New 2/`, gitignored).** The brown cabinet + `<dialog>` Info from the previous pass is gone, replaced
+wholesale by the vendored **`CT` chrome module** (`chip-thief-chrome.js`, inlined as a classic `<script>`
+right before the game's module script) plus `chip-thief-chrome.css` (inlined in `<style>`). This is a real,
+substantial rewrite of the DOM/CSS layer — read this whole section before touching the chrome again.
+
+- **Everything diegetic, nothing boxed.** Balance is a mechanical drum counter (`#counter`/`.drums`), stake
+  is a stack of clay chips on a brass tray with thumb levers (`#tray`/`.chip`), Release is a lacquer cap in a
+  brass collar (`#go`). All of it sits in a `#floorStrip` over the carpet, no card/panel background anywhere.
+  Sizing is one `--u` unit (`viewport height / 620`, JS-synced by `CT.syncUnit()`), so it scales exactly with
+  the world art from 1280x720 to 2560x1080; portrait gets its own `--u` formula and the rail stacks into rows.
+- **`CT` owns the chrome state machine.** Public API: `CT.init(opts)`, `setBalance`, `setStake`/`stepStake`,
+  `beak(mult)` (the "in beak" figure + pop animation), `result(tier, {mult,stake,payout,net,applyBalance})`,
+  `wallet(state, detail)`, `screen(id|null)`, `mute(bool)`. It also owns **every keyboard shortcut**
+  (Space/Enter release-or-confirm, Up/Down stake, M mute, Escape close) and the three full-screen `.screen`
+  overlays: **title** (shown once per `sessionStorage`, skipped entirely for a returning player who already
+  has `ct.hinted` in `localStorage` — exactly the "no friction for returners" ask), **info** ("How to play":
+  three art panels, keys, a stats strip CT tracks itself, then our own `#dbg` self-check and `#log` run log
+  bolted into its `<details>`), and **broke** (balance < 50, "Reset balance"). `chip-thief.html`'s own script
+  now only feeds `CT` numbers and gets a stake back via `onRelease(stake)` — it does not touch `#balance`,
+  `#stakeVal`, the Release button, or any keydown handler directly any more.
+- **Tier names changed:** CT's tiers are `caught`/`short`/`win`/`big`/`jackpot` (was `caught`/`partial`/`win`
+  in the old `fillVerdict`). `settle()`/`presentBigWin()` now call `CT.result(tier, {...})` with those names.
+- **One behavior change worth knowing:** CT's `release()` calls `ready()` (re-enables Release, un-dims the
+  rail) as soon as `onRelease` is invoked, and `result()` never auto-hides the slab on a timer — it only
+  hides on the *next* release (`hideSlab()`). So a fast player COULD mash Space through a big win's 1.5s hold
+  before it's fully admired; accepted as-is (a real slot lets you spin again during a win too), not a bug.
+  The canvas-side freeze (`enterHold`/`clockHold`, the ENHANCE inset, the jackpot-chip lift) is unaffected —
+  those still hold the frame until the next `launch()` clears them.
+- **Chain-mode balance never gets locally simulated**, same rule as before: `CT.result()`'s own optimistic
+  balance tick is skipped with `applyBalance: !chainMode` (a small vendored addition to `result()` in
+  `chip-thief-chrome.js` — search `applyBalance` there); the host's own snapshot via `CT.setBalance()` in
+  `onHostSnapshot` stays authoritative. Wallet states surface through `CT.wallet('waiting'|'settling'|'failed', detail)` — a bottom-center inline line, never a modal, Release stays clickable throughout (a click while
+  `!canBetOnChain()` is a silent no-op with `CT.wallet('waiting')` shown, matching the old silent-no-op guard).
+- **`#statusLine` is CT's wallet line now** — the old incident-progress flavor text ("INCIDENT ACTIVE ·
+  439m TO FIRE EXIT", "NO INCIDENT · 800m", "FRAME HOLD · INCIDENT 0413") is gone, on purpose: it was
+  dev/operator readout, the same category of thing the first chrome pass already stripped from the sidebar.
+- **The wordmark is real art now**, not text: a brass marquee sign (`#sign`, inline SVG, from
+  `Assets New 2/export/logo/logo-compact.svg`) with a goose-head-on-a-chip emblem, top-left, swaying gently
+  (`signSway`). The title screen gets the large version (`logo-title.svg`) with a bulb-chase + glint-sweep
+  entrance (added by hand, not in the export — chrome.css shipped the `bulbChase` keyframe but no rule using
+  it). **Both SVGs came with an ~8KB embedded C2PA provenance blob per `<metadata>` — stripped before use,
+  same as the favicon before it.** Both files reuse the same internal ids (`brassUp`/`cream`/`chipG`/`w`/`t`)
+  since they're the same artwork at two sizes; they're prefixed `lc-`/`lt-` before inlining so having both in
+  one document doesn't collide (duplicate SVG ids resolve to whichever the browser finds first, silently
+  breaking one of the two gradients — verify this again if a third instance of the logo is ever inlined).
+- **Store images regenerated** from the new logo art (`Assets New 2/export/logo/*.png` re-encoded with ffmpeg
+  to the same `prototypes/assets/` filenames: icon-512.webp ~12KB, cover-1600x900.webp ~17KB,
+  social-1200x630.jpg ~41KB). Manifest/`og:image` already pointed at these filenames, no URL change needed.
+- **Extra spectacle kept, retargeted:** the ENHANCE inset and the jackpot-chip digital-zoom lift
+  (`#bwEnh`/`#lift`, `showEnhance()`/`startLift()`/`renderLift()`) are ours, not CT's — CT only ships the
+  `#alarm` red border and the result slab. Both still work; sized in raw px against `--u` where it mattered.
+  `#bwTop` is reused for both the jackpot's "Alarm · severity 1" text and the lift's "Digital zoom" caption.
+- **A rendering bug from mixing the two systems, fixed:** `idleFrame()` used to gate the idle redraw on
+  `!busy` alone; since `busy` now clears immediately in `settle()` (CT owns the slab's lifetime, not a
+  `setTimeout`), the idle scene's own canvas-drawn reticle started redrawing underneath the still-visible
+  slab. Fixed with one extra clause: `!busy && !heldFrame && !verdict.classList.contains('show')`. If the
+  chrome changes again, re-check this — it's the seam between the two systems.
+- **How-to-play thumbnails** (`.panel canvas`) call `CTW.backdrop()` at three scroll offsets (idle/mid-floor/
+  near-exit) — deliberately NOT the full `world.js` scene compositor (goose/staff/chip drawing), which was
+  trimmed out of the inlined `CTW` back when the art pass landed. Room-only thumbnails, no actors; a fine
+  trade for three small "how to play" panels, not worth re-inlining a second copy of the actor-drawing code.
+- **Verified:** idle, title (auto-shows once per session, skipped for returners), a normal run through win/
+  short/caught, jackpot (alarm + enhance inset + lift, credit drum ticks correctly), How to play (panels,
+  keys, live stats, self-check text, run log), broke screen + reset, at 1440x800 / 2560x1080 / 390x844, zero
+  console errors. **Not verified:** chain mode against the local simulator (code changes were narrow —
+  `CT.wallet(...)`, `CT.setBalance/setStake`, `applyBalance` — but not exercised live this session).
 
 **Art pass (2026-09-26, Claude Design "Chip Thief World" + `Assets New/world.js`, gitignored).** The green CCTV
 grade is GONE: the room is a warm casino (oxblood walls, brass, emerald felt, sodium lamp light) and the camera
